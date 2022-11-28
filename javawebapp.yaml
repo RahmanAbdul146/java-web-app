@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: javawebappcontainer
-    image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}
+    image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:1
     resources:
       limits:
         cpu: "500m"
