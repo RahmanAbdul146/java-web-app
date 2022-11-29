@@ -6,6 +6,9 @@ metadata:
     app: javaapp
 spec:
   containers:
+    env:
+    - name: buildNumber
+      value: Build_Number
   - name: javawebappcontainer
     image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:1
     resources:
