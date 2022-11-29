@@ -10,7 +10,7 @@ spec:
     - name: buildNumber
       value: Build_Number
   - name: javawebappcontainer
-    image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:1
+    image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}
     resources:
       limits:
         cpu: "500m"
