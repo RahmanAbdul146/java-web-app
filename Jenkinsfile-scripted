@@ -1,0 +1,35 @@
+node{
+    
+  def mavenHome = tool name: "maven" , type: "maven"
+  def buildNumber = Build_Number
+
+stage('get code'){
+git branch: 'dev', credentialsId: 'GIT-Credentials', url: 'https://github.com/RahmanAbdul146/java-web-app.git'
+}
+
+stage ('build code'){
+    sh "${mavenHome}/bin/mvn clean package"
+}
+
+//stage ('Build docker image'){
+//    sh "docker build -t rahman146/javawebapp:${buildNumber} ."
+//}
+//stage('push image'){
+//    withCredentials([string(credentialsId: 'Docker_Credentials', variable: 'Dockercredentials')]) {
+//    sh "docker login -u rahman146 -p ${Dockercredentials}"
+//}
+//    sh "docker push rahman146/javawebapp:${buildNumber}"
+//}
+stage ('Build docker image in ECR'){
+    sh "docker build -t 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber} ."
+}
+
+stage ('push image to ecr'){
+    sh "docker push 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
+}
+
+stage ("deploy in k8s cluster"){ 
+    sh "kubectl apply -f javawebapp.yaml"
+    sh "kubectl set image pod/javapod javawebappcontainer=015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
+}
+}
