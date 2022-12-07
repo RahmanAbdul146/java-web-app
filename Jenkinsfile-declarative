@@ -1,0 +1,44 @@
+def  buildNumber = BUILD_NUMBER
+
+pipeline{
+    agent any;
+    tools{
+        maven "maven"
+    }
+options{
+    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
+}
+triggers{
+    pollSCM('* * * * *')
+}
+    stages{
+        stage('get code'){
+            steps{
+                git branch: 'dev', credentialsId: 'GIT-Credentials', url: 'https://github.com/RahmanAbdul146/java-web-app.git'
+            }
+        }
+        stage('build'){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage('create image'){
+            steps{
+                sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 015901552966.dkr.ecr.ap-south-1.amazonaws.com"
+                sh "docker build -t 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber} ."
+            }
+        }
+        stage('push image'){
+            steps{
+                sh "docker push 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
+            }
+        }
+        stage('deploy'){
+            steps{
+                sh "kubectl apply -f javawebapp.yaml"
+                sh "kubectl set image pod/javapod javawebappcontainer=015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
+            }
+        }
+        
+    }
+}
