@@ -36,7 +36,7 @@ options{
         stage('deploy'){
             steps{
                 sh "kubectl apply -f javawebapp.yaml"
-                sh "kubectl set image pod/javapod javawebappcontainer=015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
+                sh "kubectl set image deployment/javadeployment javawebappcontainer=015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}"
             }
         }
         
