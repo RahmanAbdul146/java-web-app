@@ -1,29 +1,46 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: javapod
-  labels:
-    app: javaapp
+  name: javadeployment
 spec:
-  containers:
-  - name: javawebappcontainer
-    image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}
-    resources:
-      limits:
-        cpu: "500m"
-        memory: "500Mi"
-      requests:
-        cpu: "250m"
-        memory: "300Mi"
-    ports:
-    - containerPort: 8080
-    
---- 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: javaapp
+  template:
+    metadata:
+      labels:
+        app: javaapp
+    spec:
+      containers:
+      - name: javawebappcontainer
+        image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: java-web-app
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: java-web-app
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 40
 
-apiVersion: v1 
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
-  name: javaappsvc
+  name: javasvc
 spec:
   type: NodePort
   selector:
@@ -31,3 +48,4 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
+
