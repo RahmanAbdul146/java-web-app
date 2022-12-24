@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: javadeployment
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: javaapp
@@ -42,7 +42,7 @@ kind: Service
 metadata:
   name: javasvc
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: javaapp
   ports:
