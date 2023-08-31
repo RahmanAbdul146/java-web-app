@@ -42,7 +42,7 @@ kind: Service
 metadata:
   name: javasvc
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: javaapp
   ports:
