@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: javawebappcontainer
-        image: 015901552966.dkr.ecr.ap-south-1.amazonaws.com/java-web-app:${buildNumber}
+        image: 624570335512.dkr.ecr.ap-south-1.amazonaws.com/javaapp:${buildNumber}
         resources:
           limits:
             memory: "512Mi"
